@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.PatientDao;
+import com.example.demo.dto.PatientDto;
 import com.example.demo.service.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +14,13 @@ public class SampleController {
     SampleService sampleService;
 
     @PostMapping("/guardar")
-    public void savePatient(@RequestBody PatientDao patientDao){
-        sampleService.savePatient(patientDao);
+    public void savePatient(@RequestBody PatientDto patient){
+        sampleService.savePatient(patient);
     }
 
-    @GetMapping("/buscar")
-    public String searchPatient(@RequestParam Integer id){
-        return sampleService.getPatient(id);
+    @GetMapping("/buscar/{apellido}")
+    public PatientDto searchPatient(@PathVariable String apellido){
+        return sampleService.getPatientByApellido(apellido);
     }
 
     @DeleteMapping
@@ -29,7 +29,7 @@ public class SampleController {
     }
 
     @GetMapping("/verTodos")
-    public ResponseEntity<List<PatientDao>> listAllPatient(){
+    public ResponseEntity<List<PatientDto>> listAllPatient(){
         return ResponseEntity.ok(sampleService.listAllPatient());
     }
 }
