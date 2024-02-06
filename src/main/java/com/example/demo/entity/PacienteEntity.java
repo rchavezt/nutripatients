@@ -1,18 +1,20 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "patients")
 public class PacienteEntity {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name = "id_patient")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     Long id;
+    @Column(name = "nombre")
     String nombre;
+    @Column(name = "apellido")
     String apellido;
+    @Column(name = "edad")
     Integer edad;
 }

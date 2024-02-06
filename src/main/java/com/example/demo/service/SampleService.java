@@ -10,7 +10,9 @@ import java.util.*;
 
 @Service
 public class SampleService {
-    String status;
+    String status = "";
+    PacienteEntity aux;
+    PatientDto auxP;
 
     @Autowired
     PacienteDao pacienteDao;
@@ -24,30 +26,57 @@ public class SampleService {
         System.out.println("Paciente registrado con ID: " + pacienteEntity.getId());
     }
 
-    public PatientDto getPatientByApellido(String apellido){
-        List<PacienteEntity> pacienteEntityList = pacienteDao.findByApellido(apellido);
-        var paciente = pacienteEntityList.get(0);
+    public PatientDto getPatientById(Long id){
         var pacienteDto = new PatientDto();
-        pacienteDto.setNombre(paciente.getNombre());
-        pacienteDto.setApellido(paciente.getApellido());
-        pacienteDto.setEdad(paciente.getEdad());
+        PacienteEntity patient = pacienteDao.findById(id).orElse(null);
 
+        if (patient == null) {
+            status = "No se encontro el usuario";
+            throw new RuntimeException(status);
+        }else {
+            status = "";
+            pacienteDto.setNombre(patient.getNombre());
+            pacienteDto.setApellido(patient.getApellido());
+            pacienteDto.setEdad(patient.getEdad());
+        }
         return pacienteDto;
     }
 
-    public String deletePatient(Integer id){
-        /*if(pacientes.containsKey(id)){
-            status = "Paciente "+ pacientes.get(id).getNombre() + " eliminado";
-            pacientes.remove(id);
-            System.out.println(status);
-        }else{
-            status = "No existe el paciente";
-            System.out.println(status);
-        }*/
+    public List<PatientDto> getPatientByApellido(String apellido){
+        List<PatientDto> pacientes = new ArrayList<>();
+        List<PacienteEntity> pacienteEntityList = pacienteDao.findByApellido(apellido);
+        System.out.println("Lista de pacientes: "+ pacienteEntityList.size());
+        for (int i = 0; i<pacienteEntityList.size(); i++){
+            aux = pacienteEntityList.get(i);
+            auxP = new PatientDto();
+            auxP.setNombre(aux.getNombre());
+            auxP.setApellido(aux.getApellido());
+            auxP.setEdad(aux.getEdad());
+            pacientes.add(i, auxP);
+        }
+        return pacientes;
+    }
+
+    public String delete(Long id, String nombre){
+        if (status.isEmpty()){
+            pacienteDao.deleteById(id);
+            status = "Paciente" + nombre +" con id: " +id+ " ha sido eliminado";
+        }
+        System.out.println(status);
         return status;
     }
 
     public List<PatientDto> listAllPatient(){
-        return null;
+        List<PatientDto> pacientes = new ArrayList<>();
+        List<PacienteEntity> pacienteEntityList = (List<PacienteEntity>) pacienteDao.findAll();
+        for (int i = 0; i<pacienteEntityList.size(); i++){
+            aux = pacienteEntityList.get(i);
+            auxP = new PatientDto();
+            auxP.setNombre(aux.getNombre());
+            auxP.setApellido(aux.getApellido());
+            auxP.setEdad(aux.getEdad());
+            pacientes.add(i, auxP);
+        }
+        return pacientes;
     }
 }

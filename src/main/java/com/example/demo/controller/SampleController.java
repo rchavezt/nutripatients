@@ -19,16 +19,22 @@ public class SampleController {
     }
 
     @GetMapping("/buscar/{apellido}")
-    public PatientDto searchPatient(@PathVariable String apellido){
-        return sampleService.getPatientByApellido(apellido);
+    public ResponseEntity<List<PatientDto>> searchPatient(@PathVariable String apellido){
+        return ResponseEntity.ok(sampleService.getPatientByApellido(apellido));
     }
 
-    @DeleteMapping
-    public String deletePatient(@RequestParam Integer id){
-        return sampleService.deletePatient(id);
+    @GetMapping("/buscarPaciente")
+    public PatientDto searchPatientById(@RequestParam Long id){
+        return sampleService.getPatientById(id);
     }
 
-    @GetMapping("/verTodos")
+    @DeleteMapping("/paciente")
+    public String deletePatient(@RequestParam Long id){
+        PatientDto pacienteEntity = sampleService.getPatientById(id);
+        return sampleService.delete(id, pacienteEntity.getNombre());
+    }
+
+    @GetMapping("/verPacientes")
     public ResponseEntity<List<PatientDto>> listAllPatient(){
         return ResponseEntity.ok(sampleService.listAllPatient());
     }
